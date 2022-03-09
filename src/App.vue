@@ -1,18 +1,13 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+<div style='padding-left:-40px;'><img alt="Vue logo" src="@/assets/logo-groupomania.png"></div>
+  <nav>  
+    <router-link to="/">Accueil</router-link> |
+    <router-link to="/login">Login</router-link> |
+    <router-link to="/share-gifs">Partage de gifs</router-link> |
+    <router-link to="/share-articles">Partage d'articles</router-link>
+  </nav>
+  <router-view/>
 </template>
-
-<script>
-import HelloWorld from './components/HelloWorld.vue'
-
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
-</script>
 
 <style lang="scss">
 #app {
@@ -21,6 +16,20 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+
+nav {
+  padding: 30px;
+
+  a {
+    font-weight: bold;
+    color: #2c3e50;
+    text-decoration: none;
+    padding: 0 10px;
+
+    &.router-link-exact-active {
+      color: #c30;
+    }
+  }
 }
 </style>
