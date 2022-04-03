@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <!--<img alt="Vue logo" src="../assets/logo-groupomania.png">-->
-    <HelloWorld msg="Réseau social interne"/>
+    <HelloWorld :msg="msg" :voila="voila" />
   </div>
 </template>
 
@@ -13,6 +13,16 @@ export default {
   name: 'HomeView',
   components: {
     HelloWorld
+  },
+  data (){
+    return {
+      voila : [
+        {id:1, name: 'nous'},
+        {id:2, name: 'vous'}
+      ],
+      msg : "Réseau social interne"
+    }
+
   }
 }
 </script>

@@ -2,9 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 import ContactView from '../views/ContactView.vue'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
-import LogoutView from '../views/LogoutView.vue'
+import LogoutView from '../views/SignupView.vue'
 import GiftView from '../views/GifsView.vue'
 import ArticlesView from '../views/ArticlesView.vue'
+import DepartmentsView from '../views/DepartmentsView.vue'
 
 const routes = [
   {
@@ -31,8 +32,8 @@ const routes = [
     component: LoginView
   },
   {
-    path: '/logout',
-    name: 'logout',
+    path: '/signup',
+    name: 'signup',
     component: LogoutView
   },
   {
@@ -44,6 +45,11 @@ const routes = [
     path: '/share-articles',
     name: 'share-articles',
     component: ArticlesView
+  },
+  {
+    path: '/add-department',
+    name: 'add-department',
+    component: DepartmentsView
   }
 ]
 

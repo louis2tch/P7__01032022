@@ -2,7 +2,7 @@
 <div style='padding-left:-40px;'><img alt="Vue logo" src="@/assets/logo-groupomania.png"></div>
   <nav>  
     <router-link to="/">Accueil</router-link> |
-    <router-link to="/login">Login</router-link> |
+    <router-link to="/login">Se connecter</router-link> |
     <router-link to="/share-gifs">Partage de gifs</router-link> |
     <router-link to="/share-articles">Partage d'articles</router-link>
   </nav>

@@ -2,7 +2,10 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <p>
-      
+     <!-- {{voila[0].name}}
+      <ul>
+        <li v-for="i in voila" :key="i.id">{{ i.name }}</li>
+      </ul>-->
     </p>
     
   </div>
@@ -12,7 +15,8 @@
 export default {
   name: 'HelloWorld',
   props: {
-    msg: String
+    msg: String,
+    voila : Object
   }
 }
 </script>
@@ -27,7 +31,7 @@ ul {
   padding: 0;
 }
 li {
-  display: inline-block;
+  /*display: inline-block;*/
   margin: 0 10px;
 }
 a {
