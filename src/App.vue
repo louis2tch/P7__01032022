@@ -7,6 +7,12 @@
     <router-link to="/share-articles">Partage d'articles</router-link>
   </nav>
   <router-view/>
+  <nav>  
+    <router-link to="/">Accueil</router-link> |
+    <router-link to="/login">Se connecter</router-link> |
+    <router-link to="/share-gifs">Partage de gifs</router-link> |
+    <router-link to="/share-articles">Partage d'articles</router-link>
+  </nav>
 </template>
 
 <style lang="scss">
