@@ -1,5 +1,5 @@
 <template>
-  <div class="addDepartment">
+  <div class="addDepartment"  v-if="existedUser().role == 1">
     <h1>Ajouter un Département</h1>
     <table>
       <tr>
@@ -17,15 +17,15 @@
   </div> 
   <div id="tout" style="display:none"></div>
   
-    <table>
+    <table v-if="existedUser().role == 1">
       <tr v-for="i in existedDepartment()" :key=i.id>
         <td>{{ i.name }}</td>
         <td><button @click="upDataDepartment(i.id, i.name), depPermission1 = false, depPermission = false"  :title="i.id" :id="i.id+'u'">up</button></td>
         <td><button @click="delDepartment(i.id)" :title="i.id" class="delete">del</button></td>
       </tr>
     </table>
-
-  <div>
+    <div v-else> ONLY FOR ADMIN</div>
+  <div style="margin-bottom:60px;">
     </div>
 </template>
 
@@ -51,67 +51,24 @@ export default {
 		return {
       depPermission : true,
       depPermission1 : true,
-			restaurantName: "La belle Vue",
-			shoppingCart: 0,
-			simpleMenu: [
-				{
-					name: "Croissant",
-					image: {
-						source: "/images/crossiant.jpg",
-						alt: "Un croissant"
-					},
-					inStock: true,
-					quantity: 1
-				},
-				{
-					name: "Baguette de pain",
-					image: {
-						source: "/images/french-baguette.jpeg",
-						alt: "Quatre baguettes de pain"
-					},
-					inStock: true,
-					quantity: 1
-				},
-				{
-					name: "Éclair",
-					image: {
-						source: "/images/eclair.jpg",
-						alt: "Éclair au chocolat"
-					},
-					inStock: false,
-					quantity: 1,
-          dd: []
-				}
-			]
-		}
-	}/*,
-	computed: {
-		copyright() {
-			const currentYear = new Date().getFullYear()
-
-			return `Copyright ${this.restaurantName} ${currentYear}`
+      zeroUser: '[{"id":"","id_dep":"","role":"","token":"", "first_name":"","last_name":""}]',
+      dd: []
+			
 		}
 	},
-	methods: {
-		addToShoppingCart(amount) {
-			this.shoppingCart += amount
-		}
-	}*/
-  ,
-	/*computed: {
-    existedDepartment() {
-    this.lanceDep();
-    //var a = document.getElementById("tout1").innerHTML;
-    //localStorage.removeItem("allDep"); 
-     var a = localStorage.getItem("allDep"); 
-      a = JSON.parse(a); 
-    
-			return a;
-
-		} 
-
-	},*/
   methods: {
+    existedUser() {
+      var a = localStorage.getItem("oneUser"); 
+      if(a !=""){ //var a = this.lanceUser();
+       a = JSON.parse(a);   
+        //alert(a[0].role);
+        return a[0]; 
+      } else
+      {
+        return JSON.parse(this.zeroUser);
+      }
+      
+		}, 
     existedDepartment() {
     var a = this.lanceDep();
     //var a = document.getElementById("tout1").innerHTML;
@@ -136,12 +93,14 @@ export default {
       if(/^$/.test(document.getElementById("department").value)) stop=true;
 
       let z = {department:{name : document.getElementById("department").value}};
+      let x = JSON.parse(localStorage.getItem("oneUser"))[0].token; 
       if(stop === false)
       fetch("http://localhost:3000/api/department", {
         method: "POST",
         headers: {
           'Accept': 'application/json', 
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization':  x
        }, 
        body: JSON.stringify(z)
       })
@@ -175,11 +134,13 @@ export default {
     upDepartment(){
       let xid = document.getElementById("UpDepartment").dataset.id;
       let z = {department:{name : document.getElementById("department").value}};
+      let x = JSON.parse(localStorage.getItem("oneUser"))[0].token; //alert("token = " + x);
       fetch(`http://localhost:3000/api/department/${xid}`, {
         method: "PUT",
         headers: {
           'Accept': 'application/json', 
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization':  x
        }, 
        body: JSON.stringify(z)
       })
@@ -206,12 +167,14 @@ export default {
 
     },
     delDepartment(xid){
-    if(confirm(`Etes vous sur de suprimmer l'element № ${xid}?`))
+      let x = JSON.parse(localStorage.getItem("oneUser"))[0].token;
+    if(confirm(`Etes vous sur de supprimer l'element № ${xid}?`))
       fetch(`http://localhost:3000/api/department/${xid}`, {
         method: "delete",
         headers: {
           'Accept': 'application/json', 
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization':  x
        }//, 
       // body: JSON.stringify(z)
       })
@@ -238,7 +201,7 @@ export default {
       
     },
     lanceDep(){
-     let x = JSON.parse(localStorage.getItem("oneUser")).token;
+     let x = JSON.parse(localStorage.getItem("oneUser"))[0].token;
      fetch("http://localhost:3000/api/department", {
         method: "GET",
         headers: {

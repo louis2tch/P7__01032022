@@ -1,7 +1,10 @@
 <template>
   <div class="login">
-    <h1>Se connecter</h1> <a href="/signup">/ Créer un Compte</a>
-    <table>
+    <h1>Se connecter</h1> <br><a href="/signup" v-if="existedUser().token ==''"><button> Créer un Compte</button></a>
+    <button v-else @click="deconnectUser" >Se deconnecter</button>
+    <br><a href="/signup"><button v-if="existedUser().role ==1" >Utilisateurs</button></a>
+    <br><a href="/add-department"><button v-if="existedUser().role ==1" >Acces aux Departements</button></a>
+    <table  v-if="existedUser().token ==''">
       <tr>
         <td>Email:</td>
         <td><input type="email" id="email" placeholder="Email"></td>
@@ -16,12 +19,7 @@
       </tr>
     </table>
     <div>
-     <div class="user">
-      User <br>
-      if moderateur<br>
-      - departements<br>
-      - users {id[0,1]}<br><br>
-      </div>
+     
     </div>
 
   </div>
@@ -51,14 +49,30 @@ export default {
 
   data() {
 		return {
-     
+     zeroUser: '[{"id":"","id_dep":"","role":"","token":"", "first_name":"","last_name":""}]'
 		}
 	},
   methods: {
+    deconnectUser() { 
+     localStorage.setItem("oneUser",this.zeroUser);
+      //localStorage.removeItem("oneUser");
+      let a = localStorage.getItem("oneUser");
+      //this.lanceUser();
+      location.reload();
+      a = JSON.parse(a);
+      return a[0];
+    },
     existedUser() {
-    var a = this.lanceUser();
-      a = JSON.parse(a);  
-			return a;
+      var a = localStorage.getItem("oneUser"); 
+      if(a !=""){ //var a = this.lanceUser();
+       a = JSON.parse(a);   
+        //alert(a[0].role);
+        return a[0]; 
+      } else
+      {
+        return JSON.parse(this.zeroUser);
+      }
+      
 		}, 
     loginUser(){
       let z = {user:{
@@ -82,14 +96,14 @@ export default {
       })
       .then(function (value) {
         console.info(value);
-        let d=''; 
+        let d='';  let i = value.v;
         if(!value) d= value;
         else
-          d +=`{"id":"${value.v.id}", "email":"${value.v.email}", "first_name":"${value.v.first_name}", "token":"${value.v.token}"}`;
-        
+          d +=`{"id":"${i.id}", "id_dep":"${i.id_dep}", "first_name":"${i.first_name}", 
+          "last_name":"${i.last_name}", "email":"${i.email}", "role":"${i.role}", "token":"${i.token}"}`;
         //d = d.substring(0,d.length-2); //supprime la derniere virgule
         d = `[${d}]`; 
-        localStorage.setItem("oneUser",d);
+        localStorage.setItem("oneUser",d); //alert(localStorage.getItem("oneUser"));
         location.reload();
       })
       .catch(function(err) {
@@ -97,36 +111,40 @@ export default {
       });
 
     },
-    lanceUser(){ alert(JSON.parse(localStorage.getItem("oneUser")).token); 
-    let x = JSON.parse(localStorage.getItem("oneUser")).token;
-     fetch("http://localhost:3000/api/auth/", {
-        method: "GET",
-        headers: {
-          'Accept': 'application/json', 
-          'Content-Type': 'application/json',
-          'Authorization':  x
-       }/*, 
-       body: JSON.stringify(z)*/
-      })
-      .then(function(res) {
-        if (res.ok) { 
-          return res.json(); 
-        } 
-      })
-      .then(function (value) {
-        let d=''; 
-        for(let i of value.v){
-          d +=`{"id":"${i.id}", "id_dep":"${i.id_dep}", "first_name":"${i.first_name}", 
-          "last_name":"${i.last_name}", "email":"${i.email}"}, `;
-        }
-        d = d.substring(0,d.length-2); //supprime la derniere virgule
-        d = `[${d}]`; 
-        localStorage.setItem("allUser",d);
-      })
-      .catch(function(err) {
-        alert("Une Erreur est survenue: ALL USERS"+err.message);
-      });
-      return localStorage.getItem("allUser");
+    lanceUser(){ 
+      //alert(localStorage.getItem("oneUser"));
+    if(localStorage.getItem("oneUser")!=this.zeroUser){ 
+      let xid = JSON.parse(localStorage.getItem("oneUser"))[0].id; 
+      let x = JSON.parse(localStorage.getItem("oneUser"))[0].token;
+      fetch(`http://localhost:3000/api/auth/${xid}`, {
+          method: "GET",
+          headers: {
+            'Accept': 'application/json', 
+            'Content-Type': 'application/json',
+            'Authorization':  x
+        }/*, 
+        body: JSON.stringify(z)*/
+        })
+        .then(function(res) {
+          if (res.ok) { 
+            return res.json(); 
+          } 
+        })
+        .then(function (value) {
+          let d=''; 
+          for(let i of value.v){
+            d +=`{"id":"${i.id}", "id_dep":"${i.id_dep}", "first_name":"${i.first_name}", 
+            "last_name":"${i.last_name}", "email":"${i.email}"}, `;
+          }
+          d = d.substring(0,d.length-2); //supprime la derniere virgule
+          d = `[${d}]`; 
+          localStorage.setItem("allUser",d);
+        })
+        .catch(function(err) {
+          alert("Une Erreur est survenue: ALL USERS"+err.message);
+        });
+        return localStorage.getItem("allUser");
+      }
     }
   }
 }

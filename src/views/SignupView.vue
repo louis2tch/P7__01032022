@@ -1,6 +1,6 @@
 <template>
   <div class="signout">
-    <h1>Créer un Compte</h1><a href="/add-department">/ Ajouter un Département</a>
+    <h1>Créer un Compte</h1><a href="/add-department" v-if="existedUser().role == 1">/ Ajouter un Département</a>
     <table>
       <tr id="aDepartment">
         <td class="dep">Département:</td>
@@ -43,9 +43,9 @@
       </tr>
     </table>
   </div>
-
-<table>
-      <tr v-for="i in existedUser()" :key=i.id>
+ <div id="ResultCompte"></div>
+<table v-if="existedUser().role == 1">
+      <tr v-for="i in existedAllUser()" :key=i.id>
         <td v-if="i.role==1" class="moderateur">{{ i.first_name }} {{ i.last_name }} <em>&rArr;</em> {{ i.email }}</td>
         <td v-else >{{ i.first_name }} {{ i.last_name }} <em>&rArr;</em> {{ i.email }}</td>
         <td><button @click="upDataUser(i.id, i.id_dep, i.first_name, i.last_name, i.email, i.role), Permission1 = false, Permission = false"  :title="i.id" :id="i.id+'u'">up</button></td>
@@ -70,6 +70,7 @@ em {color:rgb(10, 6, 245); font-weight: 600;}
 .moderateur{background:#ddd;}
 input {width:190px; height:20px;}
 select{width:200px; height:28px;}
+#ResultCompte {color:rgb(125, 56, 252); font-weight:600;}
 </style>
 
 <script>
@@ -83,7 +84,8 @@ export default {
   data() {
 		return {
       Permission : true,
-      Permission1 : true
+      Permission1 : true,
+      zeroUser: '[{"id":"","id_dep":"","role":"","token":"", "first_name":"","last_name":""}]'
 		}
 	},
   methods: {
@@ -92,11 +94,22 @@ export default {
       a = JSON.parse(a);  
 			return a;
 		}, 
-    existedUser() {
+    existedAllUser() {
     var a = this.lanceUser();
       a = JSON.parse(a);  
 			return a;
 		}, 
+    existedUser() {
+      var a = localStorage.getItem("oneUser"); 
+      if(a !=""){ //var a = this.lanceUser();
+       a = JSON.parse(a);   
+        //alert(a[0].role);
+        return a[0]; 
+      } else
+      {
+        return JSON.parse(this.zeroUser);
+      }
+		},
     addUser(){
      /* document.getElementById("NameErrorMsg").innerHTML = 
       (/^$/.test(document.getElementById("fisrt_name").value))?"<font color=red size=6 title='Champs obligatoire'>*</font>":"";
@@ -110,13 +123,15 @@ export default {
                       first_name : document.getElementById("first_name").value,
                       last_name: document.getElementById("last_name").value
                     }
-              };
+              };  
      // if(stop === false)
+     let x = JSON.parse(localStorage.getItem("oneUser"))[0].token;
       fetch("http://localhost:3000/api/auth/signup", {
         method: "POST",
         headers: {
           'Accept': 'application/json', 
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization':  x
        }, 
        body: JSON.stringify(z)
       })
@@ -134,6 +149,8 @@ export default {
         d = d.substring(0,d.length-2); //supprime la derniere virgule
         d = `[${d}]`; 
         localStorage.setItem("allUser",d);
+        document.getElementById("ResultCompte").style.display = "block";
+        document.getElementById("ResultCompte").innerHTML = "Compte crée";
         location.reload();
       })
       .catch(function(err) {
@@ -172,11 +189,13 @@ export default {
                       role : document.getElementById("Role").value,
                     }
               }; 
+      let x = JSON.parse(localStorage.getItem("oneUser"))[0].token;        
       fetch(`http://localhost:3000/api/auth/${xid}`, {
         method: "PUT",
         headers: {
           'Accept': 'application/json', 
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization':  x
        }, 
        body: JSON.stringify(z)
       })
@@ -202,7 +221,16 @@ export default {
 
     },
     lanceDep(){
-     fetch("http://localhost:3000/api/department")
+     let x = JSON.parse(localStorage.getItem("oneUser"))[0].token; 
+     fetch("http://localhost:3000/api/department", {
+        method: "GET",
+        headers: {
+          'Accept': 'application/json', 
+          'Content-Type': 'application/json',
+          'Authorization':  x
+       }/*, 
+       body: JSON.stringify(z)*/
+      })
       .then(function(res) {
         if (res.ok) { 
           return res.json(); 
@@ -223,7 +251,16 @@ export default {
       return localStorage.getItem("allDep");
     },
     lanceUser(){
-     fetch("http://localhost:3000/api/auth/")
+     let x = JSON.parse(localStorage.getItem("oneUser"))[0].token; 
+     fetch("http://localhost:3000/api/auth/", {
+        method: "GET",
+        headers: {
+          'Accept': 'application/json', 
+          'Content-Type': 'application/json',
+          'Authorization':  x
+       }/*, 
+       body: JSON.stringify(z)*/
+      })
       .then(function(res) {
         if (res.ok) { 
           return res.json(); 
