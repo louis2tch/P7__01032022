@@ -7,6 +7,14 @@ import GiftView from '../views/GifsView.vue'
 import ArticlesView from '../views/ArticlesView.vue'
 import DepartmentsView from '../views/DepartmentsView.vue'
 
+/*let shareArticles = "/share-articles";
+var a = localStorage.getItem("oneUser"); 
+a = JSON.parse(a);  
+//var login = "/";
+if(a[0].token ==''){ alert(1);
+  shareArticles = "/login";
+}
+*/
 const routes = [
   {
     path: '/',

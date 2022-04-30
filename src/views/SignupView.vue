@@ -1,6 +1,6 @@
 <template>
   <div class="signout">
-    <h1>Créer un Compte</h1><a href="/add-department" v-if="existedUser().role == 1">/ Ajouter un Département</a>
+   <!-- <h1>Créer un Compte</h1><a href="/add-department" v-if="existedUser().role == 1">/ Ajouter un Département</a>-->
     <table>
       <tr id="aDepartment">
         <td class="dep">Département:</td>
@@ -12,19 +12,19 @@
       </tr>
       <tr>
         <td><span id="emailtext">Email:</span></td>
-        <td><input type="email" id="email" placeholder="Email"></td>
+        <td><input type="email" id="email" placeholder="Email"><span id="emailErrorMsg"></span></td>
       </tr>
       <tr>
         <td><span id="passtext">Mot de passe:</span></td>
-        <td><input type="password" id="password" ></td>
+        <td><input type="password" id="password" ><span id="passwordErrorMsg"></span></td>
       </tr>
       <tr>
         <td>Prenom:</td>
-        <td><input type="text" id="first_name" ></td>
+        <td><input type="text" id="first_name" ><span id="first_nameErrorMsg"></span></td>
       </tr>
       <tr>
         <td>Nom:</td>
-        <td><input type="text" id="last_name" ></td>
+        <td><input type="text" id="last_name" ><span id="last_nameErrorMsg"></span></td>
       </tr>
       <tr >
         <td  ><rien id="openRoleText">Role:</rien></td>
@@ -58,7 +58,7 @@
 
 </template>
 <style scoped lang="scss">
-table {margin: auto; margin-top:40px;}
+table {margin: auto; margin-top:5px;}
 td {text-align: left; padding:3px;}
 h1{display:inline;}
 a{text-decoration: none;}
@@ -124,8 +124,28 @@ export default {
                       last_name: document.getElementById("last_name").value
                     }
               };  
-     // if(stop === false)
-     let x = JSON.parse(localStorage.getItem("oneUser"))[0].token;
+    document.getElementById("passwordErrorMsg").innerHTML = 
+    (/^$/.test(document.getElementById("password").value) )?"Champs obligatoire":"";
+     
+    document.getElementById("first_nameErrorMsg").innerHTML = 
+    (/^$/.test(document.getElementById("first_name").value) )?"Champs obligatoire":"";
+
+    document.getElementById("last_nameErrorMsg").innerHTML = 
+    (/^$/.test(document.getElementById("last_name").value) )?"Champs obligatoire":"";
+
+    document.getElementById("emailErrorMsg").innerHTML = 
+    (/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(document.getElementById("email").value) )?"":"email Incorrect, '@' ";
+    
+    let stop = false;   alert("1"+stop);
+    if(/^$/.test(document.getElementById("first_name").value) ||
+    /^$/.test(document.getElementById("last_name").value) ||
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(document.getElementById("email").value) === false
+    ){
+     stop=true; 
+    }
+    alert("2"+stop);
+    let x = JSON.parse(localStorage.getItem("oneUser"))[0].token;
+     if(stop === false)
       fetch("http://localhost:3000/api/auth/signup", {
         method: "POST",
         headers: {
@@ -151,7 +171,9 @@ export default {
         localStorage.setItem("allUser",d);
         document.getElementById("ResultCompte").style.display = "block";
         document.getElementById("ResultCompte").innerHTML = "Compte crée";
-        location.reload();
+        alert("Votre compte a ete cree avec succes: "+value.v[0].email)
+        window.location.replace("/login"); 
+        //location.reload();
       })
       .catch(function(err) {
         console.log("Une Erreur est survenue: ADD USER "+err.message);

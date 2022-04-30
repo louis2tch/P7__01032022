@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home"> <s  v-if="existedUser().token != ''"></s>
     <!--<img alt="Vue logo" src="../assets/logo-groupomania.png">-->
     <HelloWorld :msg="msg" :voila="voila" />
   </div>
@@ -23,6 +23,30 @@ export default {
       msg : "Réseau social interne"
     }
 
+  },
+  methods: {
+    deconnectUser() { 
+     localStorage.setItem("oneUser",this.zeroUser);
+      //localStorage.removeItem("oneUser");
+      let a = localStorage.getItem("oneUser");
+      //this.lanceUser();
+      location.reload();
+      a = JSON.parse(a);
+      return a[0];
+    },
+    existedUser() {
+      var a = localStorage.getItem("oneUser"); 
+      if(a !=""){ //var a = this.lanceUser();
+      a = JSON.parse(a);  
+      if(a[0].token =='')
+      this.$router.push('/login');
+        return a[0]; 
+      } else
+      {
+        return JSON.parse(this.zeroUser);
+      }
+        
+    }
   }
 }
 </script>

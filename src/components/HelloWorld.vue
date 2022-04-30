@@ -1,11 +1,17 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-     <!-- {{voila[0].name}}
+    <h3>{{ msg }}</h3>
+    <!--<p>
+      {{ voila[0].name }}
       <ul>
         <li v-for="i in voila" :key="i.id">{{ i.name }}</li>
-      </ul>-->
+      </ul>
+    </p>-->
+    <p>
+      Facilitons la communication entre collègues<br>
+
+Ce réseau social interne moderne et ludique, permet a nos employés de se connaître dans un cadre plus
+informel.
     </p>
     
   </div>
@@ -24,7 +30,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 h3 {
-  margin: 40px 0 0;
+  margin: 0px 0 0;
 }
 ul {
   list-style-type: none;
@@ -37,4 +43,5 @@ li {
 a {
   color: #c30;
 }
+.hello{text-align: left;}
 </style>

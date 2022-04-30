@@ -1,6 +1,6 @@
 <template>
   <div class="addDepartment"  v-if="existedUser().role == 1">
-    <h1>Ajouter un Département</h1>
+    <!--<h1>Ajouter un Département</h1>-->
     <table>
       <tr>
         <td>Departement:<i id="NameErrorMsg"></i></td>
@@ -16,7 +16,7 @@
     </table>
   </div> 
   <div id="tout" style="display:none"></div>
-  
+  <hr>
     <table v-if="existedUser().role == 1">
       <tr v-for="i in existedDepartment()" :key=i.id>
         <td>{{ i.name }}</td>
@@ -30,7 +30,7 @@
 </template>
 
 <style scoped lang="scss">
-table {margin: auto; margin-top:40px;}
+table {margin: auto; margin-top:5px;}
 td {text-align: left; padding: 3px;}
 h1{display:inline;}
 a{text-decoration: none;}

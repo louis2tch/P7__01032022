@@ -1,9 +1,6 @@
 <template>
   <div class="login">
-    <h1>Se connecter</h1> <br><a href="/signup" v-if="existedUser().token ==''"><button> Créer un Compte</button></a>
-    <button v-else @click="deconnectUser" >Se deconnecter</button>
-    <br><a href="/signup"><button v-if="existedUser().role ==1" >Utilisateurs</button></a>
-    <br><a href="/add-department"><button v-if="existedUser().role ==1" >Acces aux Departements</button></a>
+   <!-- <h1>Se connecter</h1>-->
     <table  v-if="existedUser().token ==''">
       <tr>
         <td>Email:</td>
@@ -60,12 +57,15 @@ export default {
       //this.lanceUser();
       location.reload();
       a = JSON.parse(a);
+      window.location.replace("/login"); 
       return a[0];
     },
     existedUser() {
       var a = localStorage.getItem("oneUser"); 
       if(a !=""){ //var a = this.lanceUser();
-       a = JSON.parse(a);   
+       a = JSON.parse(a);  
+       if(a[0].token !='')
+       this.$router.push('/share-articles');
         //alert(a[0].role);
         return a[0]; 
       } else
@@ -104,7 +104,43 @@ export default {
         //d = d.substring(0,d.length-2); //supprime la derniere virgule
         d = `[${d}]`; 
         localStorage.setItem("oneUser",d); //alert(localStorage.getItem("oneUser"));
-        location.reload();
+      //----------------------------------------------------
+       d=''; //let comment=""; 
+          for(let i of value.v1){
+            let dateTime = new Date(i.times).toDateString();
+            let hour = new Date(i.times).getHours();
+            let minute = new Date(i.times).getMinutes();
+            let second = new Date(i.times).getSeconds();
+
+           // i.comment = i.comment.replace("\n","<br/>");
+            //i.comment = i.comment.replace(/&apos;/g,"'");
+            //i.comment = i.comment.replace(/&quot;/g,"");
+            //let userlike = i.userlike;
+            let idCurrentUser = JSON.parse(localStorage.getItem("oneUser"))[0].id;
+            var likes = 0; 
+            var dislikes = 0; 
+            if(i.userlike != null && i.userlike !="[null]"){
+              for(let j of JSON.parse(i.userlike)) { 
+                if(j.like == 1 && j.id_user == idCurrentUser){ likes = 1; break;}
+                if(j.dislike == 1 && j.id_user == idCurrentUser){ dislikes = 1; break;}
+              }     
+            } 
+            let xid_user = JSON.parse(localStorage.getItem("oneUser"))[0].id;     
+            d +=`{"id":"${i.id_chat}", "id_user":"${i.id_user}", "id_dep":"${i.id_dep}", "first_name":"${i.first_name}", 
+            "last_name":"${i.last_name}", "email":"${i.email}", 
+            "times":"${i.times}", "dateTime":"${dateTime}", "hour":"${hour}", "minute":"${minute}", "second":"${second}", 
+            "comment":"${i.comment}", "like":"${likes}", "dislike":"${dislikes}", "likes":"${i.likes}", "dislikes":"${i.dislikes}", "xid_user": "${xid_user}"}, `;
+            
+          }
+        d = d.substring(0,d.length-2); //supprime la derniere virgule
+        d = `[${d}]`;  
+        localStorage.setItem("allChat",d); 
+      //----------------------------------------------------
+
+
+        
+        window.location.replace("/share-articles"); 
+        //location.reload();
       })
       .catch(function(err) {
         alert("Une Erreur est survenue: UP USER "+err.message);
